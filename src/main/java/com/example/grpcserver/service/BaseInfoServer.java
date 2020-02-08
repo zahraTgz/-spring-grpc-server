@@ -22,7 +22,7 @@ public class BaseInfoServer extends BasicInfoServiceGrpc.BasicInfoServiceImplBas
 
     @Override
     public void getBasicInfoById(BasicInfoInput request, StreamObserver<BasicInfoDataOutput> responseObserver) {
-        BasicInfoDataOutput response;
+        BasicInfoDataOutput response = BasicInfoDataOutput.newBuilder().build();
         try {
 
             long id = request.getId();
@@ -37,10 +37,9 @@ public class BaseInfoServer extends BasicInfoServiceGrpc.BasicInfoServiceImplBas
                         .setEnglishName(basicInfoById.getEnglishName())
                         .setIsActive(basicInfoById.getActive())
                         .build();
-
-                responseObserver.onNext(response);
-                responseObserver.onCompleted();
             }
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
 
         } catch (Exception e) {
 
@@ -52,7 +51,7 @@ public class BaseInfoServer extends BasicInfoServiceGrpc.BasicInfoServiceImplBas
     @Override
     public void insertBasicInfo(BasicInfoInput request, StreamObserver<Output> responseObserver) {
 
-        Output response;
+        Output response = Output.newBuilder().build();
         try {
 
             BasicInfo info = new BasicInfo();
@@ -65,10 +64,10 @@ public class BaseInfoServer extends BasicInfoServiceGrpc.BasicInfoServiceImplBas
             if (basicInfo != null && basicInfo.getId() != null) {
 
                 response = Output.newBuilder().setErrorCode(basicInfo.getId()).build();
-
-                responseObserver.onNext(response);
-                responseObserver.onCompleted();
             }
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
 
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
