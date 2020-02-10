@@ -15,7 +15,7 @@ import java.util.List;
  * @author z.Taghizadeh
  */
 @GRpcService
-public class BaseInfoServer extends BasicInfoServiceGrpc.BasicInfoServiceImplBase {
+public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceImplBase {
 
     @Autowired
     private BasicInfoService basicInfoService;
