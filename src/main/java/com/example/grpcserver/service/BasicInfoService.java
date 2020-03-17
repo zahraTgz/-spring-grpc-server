@@ -27,7 +27,6 @@ public class BasicInfoService {
 
     public BasicInfo saveBasicInfo(BasicInfo info) {
         return repository.save(info);
-
     }
 
     public List<BasicInfo> getAllBasicInfo() {
