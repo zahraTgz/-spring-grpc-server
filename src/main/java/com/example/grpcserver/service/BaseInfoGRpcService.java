@@ -37,7 +37,7 @@ public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceIm
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
-            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("can not found")));
         }
     }
 
@@ -55,7 +55,7 @@ public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceIm
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
-            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("can not insert")));
         }
     }
 
@@ -76,7 +76,7 @@ public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceIm
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
-            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription(e.getMessage())));
+            responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("can not get all")));
         }
     }
 
