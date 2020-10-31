@@ -68,7 +68,7 @@ public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceIm
 
             List<BasicInfo> basicInfoList = basicInfoService.getAllBasicInfo();
 
-            if (basicInfoList != null && basicInfoList.size() != 0) {
+            if (basicInfoList != null && !basicInfoList.isEmpty()) {
                 List<BasicInfoMessage> basicInfoDataOutputs = basicInfoMapper.fromBasicInfoList(basicInfoList);
                 response = BasicInfoDataOutputList
                         .newBuilder()
