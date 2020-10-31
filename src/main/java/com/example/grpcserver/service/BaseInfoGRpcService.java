@@ -3,12 +3,15 @@ package com.example.grpcserver.service;
 
 import com.example.grpcserver.mapper.BasicInfoMapper;
 import com.example.grpcserver.model.BasicInfo;
-import com.isc.mcb.rpc.bse.*;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Int64Value;
+import com.isc.mcb.rpc.bse.BasicInfoDataOutputList;
+import com.isc.mcb.rpc.bse.BasicInfoMessage;
+import com.isc.mcb.rpc.bse.BasicInfoServiceGrpc;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -16,19 +19,23 @@ import java.util.List;
 /**
  * @author z.Taghizadeh
  */
+
 @GRpcService
 public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceImplBase {
+    private final BasicInfoService basicInfoService;
+    private final BasicInfoMapper basicInfoMapper;
 
     @Autowired
-    private BasicInfoService basicInfoService;
-
-    private BasicInfoMapper basicInfoMapper = Mappers.getMapper(BasicInfoMapper.class);
+    public BaseInfoGRpcService(BasicInfoService basicInfoService, BasicInfoMapper basicInfoMapper) {
+        this.basicInfoService = basicInfoService;
+        this.basicInfoMapper = basicInfoMapper;
+    }
 
     @Override
-    public void getBasicInfoById(BasicInfoInput request, StreamObserver<BasicInfoDataOutput> responseObserver) {
-        BasicInfoDataOutput response = BasicInfoDataOutput.newBuilder().build();
+    public void getBasicInfoById(Int64Value request, StreamObserver<BasicInfoMessage> responseObserver) {
+        BasicInfoMessage response = BasicInfoMessage.newBuilder().build();
         try {
-            long id = request.getId();
+            Long id = request.getValue();
             BasicInfo basicInfoById = basicInfoService.getBasicInfoById(id);
 
             if (basicInfoById != null) {
@@ -42,15 +49,10 @@ public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceIm
     }
 
     @Override
-    public void insertBasicInfo(BasicInfoInput request, StreamObserver<Output> responseObserver) {
-        Output response = Output.newBuilder().build();
+    public void insertBasicInfo(BasicInfoMessage request, StreamObserver<Empty> responseObserver) {
+        Empty response = Empty.newBuilder().build();
         try {
-            BasicInfo info = basicInfoMapper.fromBasicInfoInput(request);
-            BasicInfo basicInfo = basicInfoService.saveBasicInfo(info);
-
-            if (basicInfo != null && basicInfo.getId() != null) {
-                response = Output.newBuilder().setId(basicInfo.getId()).build();
-            }
+            basicInfoService.saveBasicInfo(basicInfoMapper.toBasicInfo(request));
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
@@ -60,14 +62,14 @@ public class BaseInfoGRpcService extends BasicInfoServiceGrpc.BasicInfoServiceIm
     }
 
     @Override
-    public void getAllBasicInfo(BasicInfoInput request, StreamObserver<BasicInfoDataOutputList> responseObserver) {
+    public void getAllBasicInfo(Empty request, StreamObserver<BasicInfoDataOutputList> responseObserver) {
         BasicInfoDataOutputList response = BasicInfoDataOutputList.newBuilder().build();
         try {
 
             List<BasicInfo> basicInfoList = basicInfoService.getAllBasicInfo();
 
             if (basicInfoList != null && basicInfoList.size() != 0) {
-                List<BasicInfoDataOutput> basicInfoDataOutputs = basicInfoMapper.fromBasicInfoList(basicInfoList);
+                List<BasicInfoMessage> basicInfoDataOutputs = basicInfoMapper.fromBasicInfoList(basicInfoList);
                 response = BasicInfoDataOutputList
                         .newBuilder()
                         .addAllItems(basicInfoDataOutputs)

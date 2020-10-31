@@ -1,8 +1,9 @@
 package com.example.grpcserver.mapper;
 
 import com.example.grpcserver.model.BasicInfo;
-import com.isc.mcb.rpc.bse.BasicInfoDataOutput;
-import com.isc.mcb.rpc.bse.BasicInfoInput;
+import com.example.grpcserver.repository.BaseMapper;
+import com.isc.mcb.rpc.bse.BasicInfoMessage;
+import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 
@@ -11,13 +12,16 @@ import java.util.List;
 /**
  * @author z.Taghizadeh
  */
-@Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+@Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+        uses = {BaseMapper.class},
+        componentModel = "spring")
 public interface BasicInfoMapper {
 
-    BasicInfoDataOutput fromBasicInfo(BasicInfo basicInfo);
+    BasicInfoMessage fromBasicInfo(BasicInfo basicInfo);
 
-    List<BasicInfoDataOutput> fromBasicInfoList(List<BasicInfo> basicInfoList);
+    BasicInfo toBasicInfo(BasicInfoMessage basicInfo);
 
-    BasicInfo fromBasicInfoInput(BasicInfoInput basicInfoInput);
+    List<BasicInfoMessage> fromBasicInfoList(List<BasicInfo> basicInfoList);
 
 }
